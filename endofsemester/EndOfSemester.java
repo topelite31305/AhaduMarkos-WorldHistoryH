@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.random.*;
+import java.util.random.RandomGenerator;
 
 public class EndOfSemester {
     /**
@@ -13,6 +13,12 @@ public class EndOfSemester {
     */
     static Boolean displayTitleScreen = true;
     static Boolean testHistory = false;
+    static String helpMenu = """
+                First command-line argument must be the subject name (history or chemistry)
+                Second commmand-line argument is optional, and must be the number of questions that will be asked (for example, java EndOfSemester.java history 10)
+                Capitalization never matters ("a" and "A" are equivalent)
+                For multiple choice questions, only type the letter ("A", "B", "C", or "D")
+                For true-false questions, type "T" or "F" """;
     static HistoryQuestionList historyQuestionList = new HistoryQuestionList(HistoryQuestionList.rawHQList);
     static Boolean testChemistry = false;
     static ChemistryQuestionList chemistryQuestionList = new ChemistryQuestionList(ChemistryQuestionList.rawCQList);
@@ -30,16 +36,17 @@ public class EndOfSemester {
 
         // args should be subject, then number of questions in test
         if (args.length == 0 || args.length > 2) { // if wrong number of args
-            System.out.println("Wrong number of args!");
+            System.out.println("Wrong number of args!\nFor help, type \"java EndOfSemester.java help\"");
             System.exit(1); // terminates
         }
         if (displayTitleScreen == true) {
-            clearScreen();
             if (historyArgList.contains(args[0])) {
+                clearScreen();
                 System.out.println("World History H\nSemester 2 Practice Exam\nReady to start? Y/H (for help)/N");
                 testHistory = true;
             }
             else if (chemistryArgList.contains(args[0])) {
+                clearScreen();
                 System.out.println("Chemistry H\nSemester 2 Practice Exam\nReady to start? Y/H (for help)/N");
                 testChemistry = true;
             }
@@ -50,21 +57,20 @@ public class EndOfSemester {
         else if (chemistryArgList.contains(args[0])) {
             testChemistry = true;
         }
+        else if ("help".equalsIgnoreCase(args[0])) {
+            clearScreen();
+            System.out.println(helpMenu);
+            System.exit(0);
+        }
         else {
-            System.out.println("Wrong type of args: invalid subject.");
+            System.out.println("Wrong type of args: invalid subject.\nFor help, type \"java EndOfSemester.java help\"");
             System.exit(2);
         }
 
         String start = scanner.nextLine();
         if (start.equalsIgnoreCase("H")
         || start.equalsIgnoreCase("help")) {
-            System.out.println("""
-                First command-line argument must be the subject name (history or chemistry)
-                Second commmand-line argument is optional, and must be the number of questions that will be asked
-                Capitalization never matters ("a" and "A" are equivalent)
-                For multiple choice questions, only type the letter ("A", "B", "C", or "D")
-                For true-false questions, type "T" or "F"
-            """);
+            System.out.println(helpMenu + "\n");
             System.out.println("Ready to start? Y/H (for help)/N");
             displayTitleScreen = false;
             main(args);
@@ -88,6 +94,7 @@ public class EndOfSemester {
                 }
             } else if (testChemistry) {
                 test(chemistryQuestionList);
+
             } else {
                 System.err.println("what...how...what did you do");
                 System.exit(3);
